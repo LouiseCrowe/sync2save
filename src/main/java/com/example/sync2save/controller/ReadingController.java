@@ -33,9 +33,17 @@ public class ReadingController {
     }
 
     @GetMapping("/{readingId}")
-    public ResponseEntity<?> getReadingsReadingById(@PathVariable("readingId") long readingId) {
+    public ResponseEntity<?> getReadingById(@PathVariable("readingId") long readingId) {
         return ResponseEntity.ok(readingService.getReadingById(readingId));
     }
+
+    @GetMapping("/{policyId}/month/{month}")
+    public ResponseEntity<List<ReadingDTO>> getReadingsByPolicyAndMonth(
+            @PathVariable Long policyId,
+            @PathVariable int month) {
+        return ResponseEntity.ok(readingService.getReadingByPolicyIdAndMonth(policyId, month));
+    }
+
 
 
     @PostMapping("/{policyId}")
@@ -44,7 +52,7 @@ public class ReadingController {
         if(createdReading.isPresent()) {
             return ResponseEntity.ok(createdReading.get());
         } else {
-            return ResponseEntity.badRequest().body("Reading not found");
+            return ResponseEntity.badRequest().body("Could not create reading");
         }
     }
 
@@ -56,7 +64,7 @@ public class ReadingController {
         if(optionalIssueDTO.isPresent()) {
             return ResponseEntity.ok(optionalIssueDTO.get());
         } else {
-            return ResponseEntity.badRequest().body("User not found");
+            return ResponseEntity.badRequest().body("Reading not found");
         }
     }
 

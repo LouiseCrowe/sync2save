@@ -39,6 +39,19 @@ public class ReadingService {
         }
     }
 
+    public List<ReadingDTO> getReadingByPolicyIdAndMonth(Long policyId, int month) {
+        List<Reading> readings = readingRepository.findAll(); // Fetch all readings
+
+        List<ReadingDTO> filteredReadings = readings.stream()
+                .filter(r -> r.getPolicy().getPolicyId().equals(policyId)) // Match policyId
+                .filter(r -> r.getTimestamp().getMonthValue() == month) // Match month
+                .map(ReadingDTO::new) // Convert to DTO
+                .collect(Collectors.toList());
+
+        return filteredReadings;
+    }
+
+
     public Optional<ReadingDTO> updateReading(Long policyID, Long readingId, Reading updatedReading) {
         Optional<Reading> existingReading = this.readingRepository.findById(readingId);
         if(existingReading.isPresent()) {

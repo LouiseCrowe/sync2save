@@ -32,9 +32,9 @@ public class PolicyService {
     }
 
     public PolicyDTO getPolicyById(long policyId) {
-        Optional<Policy> optionalCourse = this.policyRepository.findById(policyId);
-        if(optionalCourse.isPresent()) {
-            return new PolicyDTO(optionalCourse.get());
+        Optional<Policy> optionalPolicy = this.policyRepository.findById(policyId);
+        if(optionalPolicy.isPresent()) {
+            return new PolicyDTO(optionalPolicy.get());
         } else {
             return null;
         }

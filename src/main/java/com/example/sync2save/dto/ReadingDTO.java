@@ -1,21 +1,14 @@
 package com.example.sync2save.dto;
-
 import com.example.sync2save.model.Reading;
-import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class ReadingDTO {
     private Long id;
     private String type;
-    private Date timestamp;
-    private Double value;
     private String description;
-
+    private LocalDateTime timestamp;
+    private Double value;
     private Long policyId;
 
     public ReadingDTO() {
@@ -33,7 +26,7 @@ public class ReadingDTO {
         }
     }
 
-    public ReadingDTO(long id, String type, Date timestamp, double value, String description, long policyId) {
+    public ReadingDTO(long id, String type, LocalDateTime timestamp, double value, String description, long policyId) {
         this.id = id;
         this.type = type;
         this.timestamp = timestamp;
@@ -57,11 +50,11 @@ public class ReadingDTO {
         this.type = type;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
