@@ -1,8 +1,11 @@
 package com.example.sync2save.controller;
 
 import com.example.sync2save.dto.PolicyDTO;
+import com.example.sync2save.dto.ReadingDTO;
 import com.example.sync2save.model.Policy;
 import com.example.sync2save.service.PolicyService;
+import com.example.sync2save.service.ReadingService;
+import com.example.sync2save.repository.PolicyRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,9 +18,13 @@ import java.util.Optional;
 public class PolicyController {
 
     private final PolicyService policyService;
+    private final ReadingService readingService;
+    private final PolicyRepository policyRepository;
 
-    public PolicyController(PolicyService policyService) {
+    public PolicyController(PolicyService policyService, ReadingService readingService, PolicyRepository policyRepository) {
         this.policyService = policyService;
+        this.readingService = readingService;
+        this.policyRepository = policyRepository;
     }
 
     @GetMapping
@@ -28,6 +35,38 @@ public class PolicyController {
     @GetMapping("{policyId}")
     public ResponseEntity<PolicyDTO> getPolicyByID(@PathVariable long policyId) {
         return ResponseEntity.ok(this.policyService.getPolicyById(policyId));
+    }
+
+
+    @GetMapping("/{policyId}/readings")
+    public ResponseEntity<?> getPolicyWithReadings(@PathVariable Long policyId, @RequestParam int month) {
+        Optional<Policy> policyOptional = policyRepository.findById(policyId);
+        if (policyOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        PolicyDTO policyDTO = new PolicyDTO(policyOptional.get());
+        List<ReadingDTO> readings = readingService.getReadingByPolicyIdAndMonth(policyId, month);
+
+        return ResponseEntity.ok(new PolicyWithReadingsResponse(policyDTO, readings));
+    }
+
+    public static class PolicyWithReadingsResponse {
+        private final PolicyDTO policy;
+        private final List<ReadingDTO> readings;
+
+        public PolicyWithReadingsResponse(PolicyDTO policy, List<ReadingDTO> readings) {
+            this.policy = policy;
+            this.readings = readings;
+        }
+
+        public PolicyDTO getPolicy() {
+            return policy;
+        }
+
+        public List<ReadingDTO> getReadings() {
+            return readings;
+        }
     }
 
     @PostMapping

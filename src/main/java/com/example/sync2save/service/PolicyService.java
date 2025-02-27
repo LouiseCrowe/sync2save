@@ -1,8 +1,11 @@
 package com.example.sync2save.service;
 
 import com.example.sync2save.dto.PolicyDTO;
+import com.example.sync2save.dto.ReadingDTO;
 import com.example.sync2save.model.Policy;
 import com.example.sync2save.repository.PolicyRepository;
+import com.example.sync2save.repository.ReadingRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +16,12 @@ import java.util.Optional;
 public class PolicyService {
 
     private final PolicyRepository policyRepository;
+    private final ReadingRepository readingRepository;
 
-    public PolicyService(PolicyRepository policyRepository) {
+    public PolicyService(PolicyRepository policyRepository, ReadingRepository readingRepository) {
 
         this.policyRepository = policyRepository;
+        this.readingRepository = readingRepository;
     }
 
     public PolicyDTO createPolicy(Policy policy) {
@@ -38,6 +43,24 @@ public class PolicyService {
         } else {
             return null;
         }
+    }
+
+    public Optional<PolicyDTO> getPolicyWithReadingsPerMonth(Long policyId, int month) {
+        Optional<Policy> policyOptional = policyRepository.findById(policyId);
+        if (policyOptional.isPresent()) {
+            Policy policy = policyOptional.get();
+            List<ReadingDTO> readings;
+            readings = readingRepository.findAll()
+                    .stream()
+                    .filter(r -> r.getPolicy().getPolicyId().equals(policyId))
+                    .filter(r -> r.getTimestamp().getMonthValue() == month)
+                    .map(ReadingDTO::new)
+                    .collect(Collectors.toList());
+
+            PolicyDTO policyDTO = new PolicyDTO(policy);
+            return Optional.of(policyDTO);
+        }
+        return Optional.empty();
     }
 
     public Optional<PolicyDTO> updatePolicy(long policyId, Policy policy) {
