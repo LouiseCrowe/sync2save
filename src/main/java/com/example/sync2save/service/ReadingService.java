@@ -68,6 +68,7 @@ public class ReadingService {
             reading.setType(updatedReading.getType());
             reading.setTimestamp(updatedReading.getTimestamp());
             reading.setDescription(updatedReading.getDescription());
+            reading.setValue(updatedReading.getValue());
 
             return Optional.of(new ReadingDTO(readingRepository.save(reading)));
         } else {

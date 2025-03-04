@@ -70,6 +70,7 @@ public class PolicyService {
             updatedPolicy.setType(policy.getType());
             updatedPolicy.setDescription(policy.getDescription());
             updatedPolicy.setCustomerId(policy.getCustomerId());
+            updatedPolicy.setEligibleForDiscount(policy.getEligibleForDiscount());
             Policy savedPolicy = policyRepository.save(updatedPolicy);
             return Optional.of(new PolicyDTO(this.policyRepository.save(savedPolicy)));
         } else {
